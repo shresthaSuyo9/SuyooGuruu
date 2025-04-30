@@ -1,0 +1,331 @@
+/* SuyoGuruu Login Page Styles */
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #00bfff, #a020f0);
+    height: 100vh;
+}
+
+.auth-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.auth-section .container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 450px;
+}
+
+.auth-container {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.login-container {
+    max-width: 400px;
+}
+
+/* Login Header */
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.logo-image {
+    height: 40px;
+    width: auto;
+}
+
+.auth-header h2 {
+    font-size: 2rem;
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+
+.auth-image {
+    flex: 1;
+    position: relative;
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 450px;
+    background: linear-gradient(to bottom, #f0f8ff, #b0d4ff);
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-image img {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: contain;
+    padding: 20px;
+    z-index: 1;
+}
+
+.auth-image-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(13,59,102,0.7));
+    pointer-events: none;
+    z-index: 2;
+}
+
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px;
+    color: white;
+    text-align: center;
+    z-index: 3;
+}
+
+.image-overlay h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* Login Form Elements */
+.auth-form .form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 400;
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    background-color: transparent;
+}
+
+.auth-form input:focus {
+    outline: none;
+    border-bottom-color: #a020f0;
+}
+
+.auth-form input::placeholder {
+    color: #ccc;
+}
+
+/* Forgot Password */
+.forgot-password-link {
+    text-align: right;
+    margin-top: 5px;
+}
+
+.forgot-password-link a {
+    color: #777;
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.forgot-password-link a:hover {
+    text-decoration: underline;
+}
+
+/* Login Button */
+.auth-button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(90deg, #5bc0de, #a020f0);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    margin-top: 15px;
+}
+
+.auth-button:hover {
+    opacity: 0.9;
+}
+
+/* Divider */
+.auth-divider {
+    position: relative;
+    text-align: center;
+    margin: 25px 0;
+}
+
+.auth-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.auth-divider span {
+    position: relative;
+    padding: 0 15px;
+    background-color: #fff;
+    color: #777;
+    font-size: 0.9rem;
+}
+
+/* Social Login */
+.social-login {
+    margin-bottom: 25px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: transparent;
+    color: white;
+    transition: transform 0.2s ease;
+}
+
+.social-icon:hover {
+    transform: translateY(-3px);
+}
+
+.social-icon.facebook {
+    background-color: #3b5998;
+}
+
+.social-icon.twitter {
+    background-color: #1da1f2;
+}
+
+.social-icon.google {
+    background-color: #db4437;
+}
+
+/* Error and Success Messages */
+.message {
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #d32f2f;
+    border-left: 4px solid #d32f2f;
+}
+
+.success-message {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-left: 4px solid #2e7d32;
+}
+
+/* Button as link */
+.get-started-btn {
+    background: linear-gradient(90deg, #ff7eb6, #8c52ff);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 40px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.get-started-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer Links */
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #666;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.signup-link {
+    color: #333;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 1px;
+    font-size: 0.8rem;
+}
+
+.signup-link:hover {
+    text-decoration: underline;
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 25px;
+    }
+    
+    .auth-section .container {
+        max-width: 90%;
+    }
+}
