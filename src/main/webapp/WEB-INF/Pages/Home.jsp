@@ -393,6 +393,7 @@
             <!-- Action Buttons -->
             <div class="action-buttons-container">
                 <a href="${pageContext.request.contextPath}/AddTeacher" class="action-button"><i class="fas fa-user-plus"></i> Add Teacher</a>
+                <a href="${pageContext.request.contextPath}/TimeTable" class="action-button"><i class="fas fa-calendar-alt"></i> TimeTable</a>
             </div>
         </div>
     </section>
