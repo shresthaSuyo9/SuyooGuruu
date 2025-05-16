@@ -73,7 +73,7 @@ public class AddTeacher extends HttpServlet {
 
     private void showAddForm(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/Pages/addTeacher.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/Pages/AddTeacher.jsp").forward(request, response);
     }
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) 
