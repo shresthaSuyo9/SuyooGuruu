@@ -1,13 +1,14 @@
 package com.SuyooGuruu.controller;
 
-import com.SuyooGuruu.dao.TimeTableDAO;
-import com.SuyooGuruu.model.TeacherModel;
-import com.SuyooGuruu.model.TimeTableModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import com.SuyooGuruu.dao.TeacherDAO;
+import com.SuyooGuruu.dao.TimeTableDAO;
+import com.SuyooGuruu.model.TeacherModel;
+import com.SuyooGuruu.model.TimeTableModel;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -16,25 +17,43 @@ import java.util.List;
 @WebServlet(urlPatterns = {"/TimeTable"})
 public class TimeTable extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private final TimeTableDAO timetableDAO = new TimeTableDAO();
+    private TimeTableDAO timeTableDAO;
+    private TeacherDAO teacherDAO;
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void init() throws ServletException {
+        timeTableDAO = new TimeTableDAO();
+        teacherDAO = new TeacherDAO();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
         try {
+            // Fetch all teachers for the filter dropdown
+            List<TeacherModel> teachers = teacherDAO.getAllTeachers();
+            request.setAttribute("teachers", teachers);
+
             // Get filter parameters
-            Long teacherId = request.getParameter("teacherId") != null && !request.getParameter("teacherId").isEmpty() ?
-                Long.parseLong(request.getParameter("teacherId")) : null;
+            String teacherIdStr = request.getParameter("teacherId");
             String day = request.getParameter("day");
 
-            // Fetch data
-            List<TeacherModel> teachers = timetableDAO.getAllTeachers();
-            List<TimeTableModel> timetables = timetableDAO.getTimetables(teacherId, day);
+            Long teacherId = null;
+            if (teacherIdStr != null && !teacherIdStr.isEmpty()) {
+                try {
+                    teacherId = Long.parseLong(teacherIdStr);
+                    request.setAttribute("selectedTeacherId", teacherId);
+                } catch (NumberFormatException e) {
+                    request.setAttribute("error", "Invalid Teacher ID.");
+                }
+            }
+            if (day != null && !day.isEmpty()) {
+                request.setAttribute("selectedDay", day);
+            }
 
-            // Set attributes for JSP
-            request.setAttribute("teachers", teachers);
+            // Fetch timetable entries based on filters
+            List<TimeTableModel> timetables = timeTableDAO.getAllTimetables(teacherId, day);
             request.setAttribute("timetables", timetables);
-            request.setAttribute("selectedTeacherId", teacherId);
-            request.setAttribute("selectedDay", day);
 
             request.getRequestDispatcher("/WEB-INF/Pages/TimeTable.jsp").forward(request, response);
         } catch (SQLException e) {
@@ -44,11 +63,11 @@ public class TimeTable extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
         try {
-            // Extract form data
-            Long id = request.getParameter("timetableId") != null && !request.getParameter("timetableId").isEmpty() ?
-                Long.parseLong(request.getParameter("timetableId")) : null;
+            // Fetch form data
+            String timetableIdStr = request.getParameter("timetableId");
             Long teacherId = Long.parseLong(request.getParameter("teacherId"));
             String day = request.getParameter("day");
             String startTime = request.getParameter("startTime");
@@ -57,23 +76,31 @@ public class TimeTable extends HttpServlet {
             String room = request.getParameter("room");
 
             // Basic validation
-            if (teacherId == null || day.isEmpty() || startTime.isEmpty() || endTime.isEmpty() || subject.isEmpty() || room.isEmpty()) {
-                request.setAttribute("error", "All fields are required");
-                doGet(request, response);
-                return;
+            if (teacherId == null || day == null || startTime == null || endTime == null || subject == null || room == null) {
+                throw new IllegalArgumentException("All fields are required.");
             }
 
-            // Create and save timetable
-            TimeTableModel timetable = new TimeTableModel(id, teacherId, null, day, startTime, endTime, subject, room);
-            timetableDAO.saveTimetable(timetable);
+            TimeTableModel timetable;
+            if (timetableIdStr == null || timetableIdStr.isEmpty()) {
+                // Add new timetable entry
+                timetable = new TimeTableModel(null, teacherId, null, day, startTime, endTime, subject, room);
+                timeTableDAO.addTimetable(timetable);
+            } else {
+                // Update existing timetable entry
+                Long timetableId = Long.parseLong(timetableIdStr);
+                timetable = new TimeTableModel(timetableId, teacherId, null, day, startTime, endTime, subject, room);
+                timeTableDAO.updateTimetable(timetable);
+            }
 
-            // Redirect to avoid form resubmission
-            response.sendRedirect("TimeTable");
+            response.sendRedirect(request.getContextPath() + "/TimeTable");
         } catch (SQLException e) {
             request.setAttribute("error", "Database error: " + e.getMessage());
             doGet(request, response);
         } catch (NumberFormatException e) {
-            request.setAttribute("error", "Invalid input");
+            request.setAttribute("error", "Invalid input: " + e.getMessage());
+            doGet(request, response);
+        } catch (IllegalArgumentException e) {
+            request.setAttribute("error", e.getMessage());
             doGet(request, response);
         }
     }

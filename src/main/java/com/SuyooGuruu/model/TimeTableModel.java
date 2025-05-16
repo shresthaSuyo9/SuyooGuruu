@@ -10,6 +10,9 @@ public class TimeTableModel {
     private String subject;
     private String room;
 
+    // Default constructor
+    public TimeTableModel() {}
+
     // Constructor
     public TimeTableModel(Long id, Long teacherId, String teacherName, String day, String startTime, String endTime, String subject, String room) {
         this.id = id;

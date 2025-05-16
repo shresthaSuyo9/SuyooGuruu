@@ -10,7 +10,6 @@ import com.SuyooGuruu.dao.TeacherDAO;
 import com.SuyooGuruu.model.TeacherModel;
 import org.mindrot.jbcrypt.BCrypt;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.regex.Pattern;
 
 /**
@@ -89,41 +88,36 @@ public class RegistrationController extends HttpServlet {
             return;
         }
 
-        try {
-            // Check if username or email already exists
-            if (teacherDAO.isUsernameExists(username)) {
-                errorMessage = "Username already exists!";
-            } else if (teacherDAO.isEmailExists(email)) {
-                errorMessage = "Email already exists!";
-            } else {
-                // Hash password
-                String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        // Check if username or email already exists
+		if (teacherDAO.isUsernameExists(username)) {
+		    errorMessage = "Username already exists!";
+		} else if (teacherDAO.isEmailExists(email)) {
+		    errorMessage = "Email already exists!";
+		} else {
+		    // Hash password
+		    String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-                // Create Teacher object
-                TeacherModel teacher = new TeacherModel();
-                teacher.setFirstName(firstName);
-                teacher.setLastName(lastName);
-                teacher.setUsername(username);
-                teacher.setBirthday(java.sql.Date.valueOf(birthday));
-                teacher.setPhone(phone);
-                teacher.setEmail(email);
-                teacher.setPassword(hashedPassword);
+		    // Create Teacher object
+		    TeacherModel teacher = new TeacherModel();
+		    teacher.setFirstName(firstName);
+		    teacher.setLastName(lastName);
+		    teacher.setUsername(username);
+		    teacher.setBirthday(java.sql.Date.valueOf(birthday));
+		    teacher.setPhone(phone);
+		    teacher.setEmail(email);
+		    teacher.setPassword(hashedPassword);
 
-                // Save to database
-                teacherDAO.registerTeacher(teacher);
-                
-                // Store registration success in session
-                session.setAttribute("registrationSuccess", true);
-                session.setAttribute("registeredUsername", username);
-                
-                request.setAttribute("successMessage", "Registration successful! Please login.");
-                request.getRequestDispatcher("WEB-INF/Pages/SuyoGuruu_Registration_Page.jsp").forward(request, response);
-                return;
-            }
-        } catch (SQLException e) {
-            errorMessage = "Database error occurred. Please try again.";
-            e.printStackTrace();
-        }
+		    // Save to database
+		    teacherDAO.addTeacher(teacher);
+		    
+		    // Store registration success in session
+		    session.setAttribute("registrationSuccess", true);
+		    session.setAttribute("registeredUsername", username);
+		    
+		    request.setAttribute("successMessage", "Registration successful! Please login.");
+		    request.getRequestDispatcher("WEB-INF/Pages/SuyoGuruu_Registration_Page.jsp").forward(request, response);
+		    return;
+		}
 
         request.setAttribute("errorMessage", errorMessage);
         request.getRequestDispatcher("WEB-INF/Pages/SuyoGuruu_Registration_Page.jsp").forward(request, response);

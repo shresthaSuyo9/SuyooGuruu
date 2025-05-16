@@ -1,111 +1,123 @@
 package com.SuyooGuruu.dao;
 
-import com.SuyooGuruu.model.TeacherModel;
+import com.SuyooGuruu.config.DBConfig;
 import com.SuyooGuruu.model.TimeTableModel;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TimeTableDAO {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/suyooguruu_db?useSSL=false";
-    private static final String DB_USER = "root"; // Replace with your DB username
-    private static final String DB_PASSWORD = ""; // Replace with your DB password
 
-    // Get all teachers for dropdown
-    public List<TeacherModel> getAllTeachers() throws SQLException {
-        List<TeacherModel> teachers = new ArrayList<>();
-        String sql = "SELECT TeacherID, FirstName, LastName FROM Teacher ORDER BY FirstName, LastName";
-        
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                TeacherModel teacher = new TeacherModel();
-                teacher.setId(rs.getLong("TeacherID"));
-                teacher.setFirstName(rs.getString("FirstName"));
-                teacher.setLastName(rs.getString("LastName"));
-                teachers.add(teacher);
-            }
+    private static final String INSERT_TIMETABLE_SQL = "INSERT INTO timetable (teacher_id, day, start_time, end_time, subject, room) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String SELECT_ALL_TIMETABLE = "SELECT t.timetable_id, t.teacher_id, CONCAT(teachers.first_name, ' ', teachers.last_name) AS teacher_name, t.day, t.start_time, t.end_time, t.subject, t.room FROM timetable t JOIN teachers ON t.teacher_id = teachers.id WHERE 1=1";
+    private static final String SELECT_TIMETABLE_BY_ID = "SELECT t.timetable_id, t.teacher_id, CONCAT(teachers.first_name, ' ', teachers.last_name) AS teacher_name, t.day, t.start_time, t.end_time, t.subject, t.room FROM timetable t JOIN teachers ON t.teacher_id = teachers.id WHERE t.timetable_id = ?";
+    private static final String UPDATE_TIMETABLE_SQL = "UPDATE timetable SET teacher_id = ?, day = ?, start_time = ?, end_time = ?, subject = ?, room = ? WHERE timetable_id = ?";
+    private static final String DELETE_TIMETABLE_SQL = "DELETE FROM timetable WHERE timetable_id = ?";
+
+    public void addTimetable(TimeTableModel timetable) throws SQLException {
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_TIMETABLE_SQL)) {
+            preparedStatement.setLong(1, timetable.getTeacherId());
+            preparedStatement.setString(2, timetable.getDay());
+            preparedStatement.setTime(3, Time.valueOf(timetable.getStartTime() + ":00"));
+            preparedStatement.setTime(4, Time.valueOf(timetable.getEndTime() + ":00"));
+            preparedStatement.setString(5, timetable.getSubject());
+            preparedStatement.setString(6, timetable.getRoom());
+            preparedStatement.executeUpdate();
         }
-        return teachers;
     }
 
-    // Get filtered timetable entries
-    public List<TimeTableModel> getTimetables(Long teacherId, String day) throws SQLException {
+    public List<TimeTableModel> getAllTimetables(Long teacherId, String day) throws SQLException {
         List<TimeTableModel> timetables = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(
-            "SELECT t.TimeTableID, t.TeacherID, t.Day, t.StartTime, t.EndTime, t.Subject, t.Room, " +
-            "CONCAT(tchr.FirstName, ' ', tchr.LastName) AS TeacherName " +
-            "FROM TIMETABLE t " +
-            "LEFT JOIN Teacher tchr ON t.TeacherID = tchr.TeacherID"
-        );
+        StringBuilder query = new StringBuilder(SELECT_ALL_TIMETABLE);
         List<Object> params = new ArrayList<>();
-        boolean whereAdded = false;
 
-        if (teacherId != null) {
-            sql.append(" WHERE t.TeacherID = ?");
+        if (teacherId != null && teacherId > 0) {
+            query.append(" AND t.teacher_id = ?");
             params.add(teacherId);
-            whereAdded = true;
         }
         if (day != null && !day.isEmpty()) {
-            sql.append(whereAdded ? " AND" : " WHERE").append(" t.Day = ?");
+            query.append(" AND t.day = ?");
             params.add(day);
         }
-        sql.append(" ORDER BY t.Day, t.StartTime");
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
             for (int i = 0; i < params.size(); i++) {
-                stmt.setObject(i + 1, params.get(i));
+                preparedStatement.setObject(i + 1, params.get(i));
             }
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    TimeTableModel timetable = new TimeTableModel(
-                        rs.getLong("TimeTableID"),
-                        rs.getLong("TeacherID"),
-                        rs.getString("TeacherName"),
-                        rs.getString("Day"),
-                        rs.getString("StartTime"),
-                        rs.getString("EndTime"),
-                        rs.getString("Subject"),
-                        rs.getString("Room")
-                    );
-                    timetables.add(timetable);
-                }
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                // Convert TIME to String by removing seconds
+                String startTime = rs.getTime("start_time").toString().substring(0, 5);
+                String endTime = rs.getTime("end_time").toString().substring(0, 5);
+
+                TimeTableModel timetable = new TimeTableModel(
+                    rs.getLong("timetable_id"),
+                    rs.getLong("teacher_id"),
+                    rs.getString("teacher_name"),
+                    rs.getString("day"),
+                    startTime,
+                    endTime,
+                    rs.getString("subject"),
+                    rs.getString("room")
+                );
+                timetables.add(timetable);
             }
         }
         return timetables;
     }
 
-    // Save or update timetable entry
-    public void saveTimetable(TimeTableModel timetable) throws SQLException {
-        String sql = timetable.getId() == null || timetable.getId() == 0 ?
-            "INSERT INTO TIMETABLE (TeacherID, Day, StartTime, EndTime, Subject, Room) VALUES (?, ?, ?, ?, ?, ?)" :
-            "UPDATE TIMETABLE SET TeacherID = ?, Day = ?, StartTime = ?, EndTime = ?, Subject = ?, Room = ? WHERE TimeTableID = ?";
-        
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, timetable.getTeacherId());
-            stmt.setString(2, timetable.getDay());
-            stmt.setString(3, timetable.getStartTime());
-            stmt.setString(4, timetable.getEndTime());
-            stmt.setString(5, timetable.getSubject());
-            stmt.setString(6, timetable.getRoom());
-            if (timetable.getId() != null && timetable.getId() != 0) {
-                stmt.setLong(7, timetable.getId());
+    public TimeTableModel getTimetableById(Long id) throws SQLException {
+        TimeTableModel timetable = null;
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_TIMETABLE_BY_ID)) {
+            preparedStatement.setLong(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                // Convert TIME to String by removing seconds
+                String startTime = rs.getTime("start_time").toString().substring(0, 5);
+                String endTime = rs.getTime("end_time").toString().substring(0, 5);
+
+                timetable = new TimeTableModel(
+                    rs.getLong("timetable_id"),
+                    rs.getLong("teacher_id"),
+                    rs.getString("teacher_name"),
+                    rs.getString("day"),
+                    startTime,
+                    endTime,
+                    rs.getString("subject"),
+                    rs.getString("room")
+                );
             }
-            stmt.executeUpdate();
+        }
+        return timetable;
+    }
+
+    public void updateTimetable(TimeTableModel timetable) throws SQLException {
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_TIMETABLE_SQL)) {
+            preparedStatement.setLong(1, timetable.getTeacherId());
+            preparedStatement.setString(2, timetable.getDay());
+            preparedStatement.setTime(3, Time.valueOf(timetable.getStartTime() + ":00"));
+            preparedStatement.setTime(4, Time.valueOf(timetable.getEndTime() + ":00"));
+            preparedStatement.setString(5, timetable.getSubject());
+            preparedStatement.setString(6, timetable.getRoom());
+            preparedStatement.setLong(7, timetable.getId());
+            preparedStatement.executeUpdate();
         }
     }
 
-    // Delete timetable entry
     public void deleteTimetable(Long id) throws SQLException {
-        String sql = "DELETE FROM TIMETABLE WHERE TimeTableID = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, id);
-            stmt.executeUpdate();
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_TIMETABLE_SQL)) {
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
         }
     }
 }

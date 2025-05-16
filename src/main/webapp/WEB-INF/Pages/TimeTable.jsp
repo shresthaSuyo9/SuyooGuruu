@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    pageContext.setAttribute("days", new String[] {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"});
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,7 +40,7 @@
                         <label for="dayFilter">Filter by Day:</label>
                         <select id="dayFilter" name="day">
                             <option value="">All Days</option>
-                            <c:forEach var="day" items="${['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']}">
+                            <c:forEach var="day" items="${days}">
                                 <option value="${day}" ${day == selectedDay ? 'selected' : ''}>${day}</option>
                             </c:forEach>
                         </select>
@@ -71,7 +74,7 @@
                         <label for="day"><b>Day</b></label>
                         <select id="day" name="day" required>
                             <option value="">Select Day</option>
-                            <c:forEach var="day" items="${['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']}">
+                            <c:forEach var="day" items="${days}">
                                 <option value="${day}">${day}</option>
                             </c:forEach>
                         </select>
@@ -130,14 +133,14 @@
                                 <td>${timetable.subject}</td>
                                 <td>${timetable.room}</td>
                                 <td class="actions">
-                                    <button class="btn-edit" onclick="editTimetable('${timetable.id}', 
-                                                                                  '${timetable.teacherId}',
+                                    <button class="btn-edit" onclick="editTimetable(${timetable.id}, 
+                                                                                  ${timetable.teacherId},
                                                                                   '${timetable.day}',
                                                                                   '${timetable.startTime}',
                                                                                   '${timetable.endTime}',
                                                                                   '${timetable.subject}',
                                                                                   '${timetable.room}')">Edit</button>
-                                    <button class="btn-delete" onclick="confirmDelete('${timetable.id}')">Delete</button>
+                                    <button class="btn-delete" onclick="confirmDelete(${timetable.id})">Delete</button>
                                 </td>
                             </tr>
                         </c:forEach>

@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuyoGuruu - Add Teacher</title>
+    <title>SuyoGuruu - Edit Teacher</title>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/CSS/AddTeacher.css">
     <style>
         .dashboard-container {
             display: flex;
-            gap: 20px;
+            gap:  dins20px;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -65,43 +65,44 @@
 
     <main>
         <div class="page-header">
-            <h2>Add Teacher</h2>
-            <p>Enter the details to add a new teacher to the system</p>
+            <h2>Edit Teacher</h2>
+            <p>Update the teacher's details</p>
         </div>
 
         <div class="dashboard-container">
             <div class="form-container">
-                <form action="<%= request.getContextPath() %>/teachers/add" method="post">
+                <form action="<%= request.getContextPath() %>/teachers/edit" method="post">
+                    <input type="hidden" name="id" value="${teacher.id}">
                     <div class="form-group">
                         <label for="firstName">First Name<span class="required">*</span></label>
-                        <input type="text" id="firstName" name="firstName" required>
+                        <input type="text" id="firstName" name="firstName" value="${teacher.firstName}" required>
                     </div>
                     <div class="form-group">
                         <label for="lastName">Last Name<span class="required">*</span></label>
-                        <input type="text" id="lastName" name="lastName" required>
+                        <input type="text" id="lastName" name="lastName" value="${teacher.lastName}" required>
                     </div>
                     <div class="form-group">
                         <label for="username">Username<span class="required">*</span></label>
-                        <input type="text" id="username" name="username" required>
+                        <input type="text" id="username" name="username" value="${teacher.username}" required>
                     </div>
                     <div class="form-group">
                         <label for="email">Email<span class="required">*</span></label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" id="email" name="email" value="${teacher.email}" required>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone">
+                        <input type="tel" id="phone" name="phone" value="${teacher.phone}">
                     </div>
                     <div class="form-group">
                         <label for="birthday">Birthday</label>
-                        <input type="date" id="birthday" name="birthday">
+                        <input type="date" id="birthday" name="birthday" value="${teacher.birthday}">
                     </div>
                     <div class="form-group">
                         <label for="password">Password<span class="required">*</span></label>
-                        <input type="password" id="password" name="password" required>
+                        <input type="password" id="password" name="password" value="${teacher.password}" required>
                     </div>
                     <div class="form-actions">
-                        <button type="submit" class="btn-primary">Save Teacher</button>
+                        <button type="submit" class="btn-primary">Update Teacher</button>
                         <button type="button" class="btn-outline" 
                                 onclick="location.href='<%= request.getContextPath() %>/teachers'">Cancel</button>
                     </div>
