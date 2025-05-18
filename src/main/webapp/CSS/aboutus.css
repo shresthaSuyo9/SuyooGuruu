@@ -9,7 +9,7 @@
 }
 
 body {
-    background-color: #f5f7fa;
+    background: linear-gradient(135deg, #4a90e2 0%, #ffffff 30%, #add8e6 60%, #d8bfd8 100%); /* Blue, white, light blue, purple touch */
     color: #333;
     line-height: 1.6;
 }

@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/teachers", "/teachers/add", "/teachers/edit", "/teachers/delete"})
+@WebServlet(urlPatterns = {"/teachers", "/teachers/add", "/teachers/edit", "/teachers/delete", "/teachers/search"})
 public class AddTeacher extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private TeacherDAO teacherDAO;
@@ -39,6 +39,9 @@ public class AddTeacher extends HttpServlet {
                 break;
             case "/teachers/delete":
                 deleteTeacher(request, response);
+                break;
+            case "/teachers/search":
+                searchTeachers(request, response);
                 break;
             default:
                 listTeachers(request, response);
@@ -67,13 +70,13 @@ public class AddTeacher extends HttpServlet {
     private void listTeachers(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         List<TeacherModel> teachers = teacherDAO.getAllTeachers();
-        request.setAttribute("teachers", teachers);
-        request.getRequestDispatcher("/WEB-INF/Pages/teachers.jsp").forward(request, response);
+        request.setAttribute("searchResults", teachers);
+        request.getRequestDispatcher("/WEB-INF/Pages/AddTeacher.jsp").forward(request, response);
     }
 
     private void showAddForm(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/Pages/AddTeacher.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/Pages/addTeacherForm.jsp").forward(request, response);
     }
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) 
@@ -126,5 +129,13 @@ public class AddTeacher extends HttpServlet {
         Long id = Long.parseLong(request.getParameter("id"));
         teacherDAO.deleteTeacher(id);
         response.sendRedirect(request.getContextPath() + "/teachers");
+    }
+
+    private void searchTeachers(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        String searchName = request.getParameter("searchName");
+        List<TeacherModel> teachers = teacherDAO.searchTeachersByName(searchName);
+        request.setAttribute("searchResults", teachers);
+        request.getRequestDispatcher("/WEB-INF/Pages/AddTeacher.jsp").forward(request, response);
     }
 }

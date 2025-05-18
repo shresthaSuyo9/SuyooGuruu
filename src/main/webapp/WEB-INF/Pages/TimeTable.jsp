@@ -102,7 +102,7 @@
                     
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-danger" onclick="closeForm()">Cancel</button>
+                        <button type="type" class="btn btn-danger" onclick="closeForm()">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -123,27 +123,39 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="timetable" items="${timetables}">
-                            <tr>
-                                <td>${timetable.id}</td>
-                                <td>${timetable.teacherName}</td>
-                                <td>${timetable.day}</td>
-                                <td>${timetable.startTime}</td>
-                                <td>${timetable.endTime}</td>
-                                <td>${timetable.subject}</td>
-                                <td>${timetable.room}</td>
-                                <td class="actions">
-                                    <button class="btn-edit" onclick="editTimetable(${timetable.id}, 
-                                                                                  ${timetable.teacherId},
-                                                                                  '${timetable.day}',
-                                                                                  '${timetable.startTime}',
-                                                                                  '${timetable.endTime}',
-                                                                                  '${timetable.subject}',
-                                                                                  '${timetable.room}')">Edit</button>
-                                    <button class="btn-delete" onclick="confirmDelete(${timetable.id})">Delete</button>
-                                </td>
-                            </tr>
-                        </c:forEach>
+                        <script>
+                            console.log("timetables value:", ${timetables});
+                        </script>
+                        <c:choose>
+                            <c:when test="${empty timetables}">
+                                <tr>
+                                    <td colspan="8" style="text-align: center;">No timetable entries found.</td>
+                                </tr>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="timetable" items="${timetables}">
+                                    <tr>
+                                        <td>${timetable.id}</td>
+                                        <td>${timetable.teacherName}</td>
+                                        <td>${timetable.day}</td>
+                                        <td>${timetable.startTime}</td>
+                                        <td>${timetable.endTime}</td>
+                                        <td>${timetable.subject}</td>
+                                        <td>${timetable.room}</td>
+                                        <td class="actions">
+                                            <button class="btn-edit" onclick="editTimetable(${timetable.id}, 
+                                                                                          ${timetable.teacherId},
+                                                                                          '${timetable.day}',
+                                                                                          '${timetable.startTime}',
+                                                                                          '${timetable.endTime}',
+                                                                                          '${timetable.subject}',
+                                                                                          '${timetable.room}')">Edit</button>
+                                            <button class="btn-delete" onclick="confirmDelete(${timetable.id})">Delete</button>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
                     </tbody>
                 </table>
             </div>

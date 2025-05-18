@@ -375,9 +375,9 @@
             </nav>
             <div class="user-actions">
                 <a href="#" class="search-icon"><i class="fas fa-search"></i></a>
-                <a href="${pageContext.request.contextPath}/profile" class="account-icon"><i class="fas fa-user"></i></a>
+                <a href="${pageContext.request.contextPath}/Profile" class="account-icon"><i class="fas fa-user"></i></a>
                 <a href="${pageContext.request.contextPath}/notifications" class="notification-icon"><i class="fas fa-bell"></i></a>
-             
+                <a href="${pageContext.request.contextPath}/LogOut" class="logout-icon"><i class="fas fa-sign-out-alt"></i></a>
             </div>
         </div>
     </header>
@@ -392,7 +392,7 @@
             
             <!-- Action Buttons -->
             <div class="action-buttons-container">
-                <a href="${pageContext.request.contextPath}/AddTeacher" class="action-button"><i class="fas fa-user-plus"></i> Add Teacher</a>
+                <a href="${pageContext.request.contextPath}/teachers" class="action-button"><i class="fas fa-user-plus"></i> Add Teacher</a>
                 <a href="${pageContext.request.contextPath}/TimeTable" class="action-button"><i class="fas fa-calendar-alt"></i> TimeTable</a>
             </div>
         </div>
@@ -494,14 +494,14 @@
             </div>
         </div>
         <div class="copyright">
-            <p>&copy; 2025 Teacher Management System. All rights reserved.</p>
+            <p>© 2025 Teacher Management System. All rights reserved.</p>
         </div>
     </footer>
 
     <!-- Login Modal -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close">×</span>
             <h2>Login</h2>
             <form action="${pageContext.request.contextPath}/home" method="post">
                 <input type="hidden" name="action" value="login">

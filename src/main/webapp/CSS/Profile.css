@@ -2,7 +2,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background: linear-gradient(135deg, #4a90e2 0%, #ffffff 30%, #add8e6 60%, #d8bfd8 100%);
     margin: 0;
     padding: 0;
     display: flex;
@@ -17,7 +17,7 @@ body {
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    width: 500px;
+    width: 600px;
     max-width: 100%;
     box-sizing: border-box;
 }
@@ -29,29 +29,35 @@ h1 {
     text-align: center;
 }
 
-/* Photo Section Styles */
-.photo-section {
-    margin-bottom: 25px;
-    text-align: center;
+/* Profile Display Styles */
+.profile-display {
+    text-align: left;
 }
 
-.photo-section img, .photo-display img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #4a90e2;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.profile-content {
+    margin-bottom: 20px;
 }
 
-.photo-section img:hover {
-    border-color: #357ABD;
-    transform: scale(1.05);
+.profile-details {
+    flex: 1;
 }
 
-.photo-section input[type="file"] {
-    display: none;
+.profile-details h2 {
+    color: #4a90e2;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.profile-details p {
+    margin: 10px 0;
+    line-height: 1.5;
+    color: #555;
+}
+
+.profile-details strong {
+    color: #333;
+    width: 100px;
+    display: inline-block;
 }
 
 /* Form Layout */
@@ -64,10 +70,6 @@ h1 {
 
 .input-field {
     width: 48%;
-}
-
-.single-field .input-field {
-    width: 100%;
 }
 
 .input-field label {
@@ -104,84 +106,33 @@ h1 {
     transition: all 0.3s ease;
 }
 
-.btn-update, .btn-edit {
+.btn-edit, .btn-update {
     background-color: #4a90e2;
     color: #fff;
-    width: 100%;
 }
 
-.btn-update:hover, .btn-edit:hover {
+.btn-edit:hover, .btn-update:hover {
     background-color: #357ABD;
 }
 
 .btn-cancel {
     background-color: #ccc;
     color: #333;
-    width: 48%;
 }
 
 .btn-cancel:hover {
     background-color: #b8b8b8;
 }
 
-.btn-delete {
-    background-color: #e74c3c;
-    color: #fff;
-    width: 48%;
-}
-
-.btn-delete:hover {
-    background-color: #c0392b;
-}
-
-.btn-password {
-    background-color: #2ecc71;
-    color: #fff;
-    width: 100%;
-    margin-top: 10px;
-}
-
-.btn-password:hover {
-    background-color: #27ae60;
-}
-
 .action-buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     flex-wrap: wrap;
 }
 
-/* Profile Display Styles */
-.profile-display {
+.profile-display p[style*="color: green"], .profile-display p[style*="color: red"] {
     text-align: center;
-}
-
-.photo-display {
-    margin-bottom: 20px;
-}
-
-.profile-details {
-    margin-bottom: 25px;
-    text-align: left;
-}
-
-.profile-details h2 {
-    color: #4a90e2;
-    margin-bottom: 15px;
-    font-size: 1.5em;
-    text-align: center;
-}
-
-.profile-details p {
-    margin: 10px 0;
-    line-height: 1.5;
-    color: #555;
-}
-
-.profile-details strong {
-    color: #333;
-    width: 100px;
-    display: inline-block;
+    margin-top: 10px;
 }
 
 /* Responsive adjustments */
@@ -190,23 +141,24 @@ h1 {
         width: 90%;
         padding: 20px;
     }
-    
+
     .input-field {
         width: 100%;
         margin-bottom: 15px;
     }
-    
+
     .form-group {
         flex-direction: column;
         margin-bottom: 5px;
     }
-    
-    .btn-cancel, .btn-delete {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    
+
     .action-buttons {
         flex-direction: column;
+        align-items: center;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
     }
 }

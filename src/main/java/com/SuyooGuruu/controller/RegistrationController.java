@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 /**
  * Servlet implementation class RegistrationController
  */
-@WebServlet(asyncSupported = true, urlPatterns = { "/register" })
+@WebServlet(asyncSupported = true, urlPatterns = { "/register","/" })
 public class RegistrationController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private TeacherDAO teacherDAO;
